@@ -25,7 +25,7 @@ namespace Sample
 
         public override long Position { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
 
-        public async Task StopBufferingAsync()
+        public async Task StopBufferingAsync(CancellationToken cancellationToken = default)
         {
             if (!_isBuffering)
             {
@@ -34,7 +34,7 @@ namespace Sample
 
             _isBuffering = false;
 
-            await _fileBufferingWriteStream.DrainBufferAsync(_stream);
+            await _fileBufferingWriteStream.DrainBufferAsync(_stream, cancellationToken);
         }
 
         private Stream ActiveStream => _isBuffering ? _fileBufferingWriteStream : _stream;
@@ -91,7 +91,7 @@ namespace Sample
             // TODO: Use the disable buffering feature
             if (_isBuffering && _context.Response.ContentType == "text/event-stream")
             {
-                await StopBufferingAsync();
+                await StopBufferingAsync(cancellationToken);
             }
 
             await ActiveStream.FlushAsync(cancellationToken);

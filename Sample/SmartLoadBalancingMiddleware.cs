@@ -55,15 +55,16 @@ public static class SmartLoadBalancingMiddlewareExtensions
                     context.Request.EnableBuffering();
                 }
 
-                // On first flush, if the response is successful, we want the stream to be pass through
                 bufferedBody = new BufferingStream(context);
 
                 context.Response.OnStarting(() =>
                 {
+                    // On first flush, if the response is successful, we want the stream to be pass through
                     if (context.WebSockets.IsWebSocketRequest)
                     {
                         return bufferedBody!.StopBufferingAsync();
                     }
+
                     return Task.CompletedTask;
                 });
 
@@ -109,7 +110,7 @@ public static class SmartLoadBalancingMiddlewareExtensions
         });
     }
 
-    private class Transformer : HttpTransformer
+    private sealed class Transformer : HttpTransformer
     {
         public override ValueTask TransformRequestAsync(HttpContext httpContext, HttpRequestMessage proxyRequest, string destinationPrefix)
         {
