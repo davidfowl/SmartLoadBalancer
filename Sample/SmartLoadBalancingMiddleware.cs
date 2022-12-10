@@ -36,6 +36,9 @@ public static class SmartLoadBalancingMiddlewareExtensions
 
         return app.Use(async (context, next) =>
         {
+            // If this is from an internal server, we don't proxy anything as that would cause a chain
+            // of LB -> Server X -> LB -> Server Y requests that would spam the load balancer and servers.
+            // Each retry is allowed a single hop.
             var from = context.Request.Headers["X-Internal"];
 
             var hubMetadata = !StringValues.IsNullOrEmpty(from) ? null : context.GetEndpoint()?.Metadata.GetMetadata<HubMetadata>();
@@ -93,6 +96,7 @@ public static class SmartLoadBalancingMiddlewareExtensions
                             context.Request.Body.Position = 0;
                         }
 
+                        // Clear the response in case some content was written to the body
                         context.Response.Clear();
 
                         // Forward requests via the load balancer to find the right instance
@@ -104,6 +108,7 @@ public static class SmartLoadBalancingMiddlewareExtensions
             }
         });
     }
+
     private class Transformer : HttpTransformer
     {
         public override ValueTask TransformRequestAsync(HttpContext httpContext, HttpRequestMessage proxyRequest, string destinationPrefix)
