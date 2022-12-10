@@ -28,5 +28,5 @@ Here's how a successful SignalR connection is made with this pattern:
 ## Caveats
 
 - There will be more connections from individual instances going through the load balancer for HTTP/1.1 requests. This can be improved if the load balancer supports HTTP/2 requests as the request from the internal server can be multiplexed over less connections.
-- Worst case runtime assuming the load balacing algorithm will eventually distribute the load is [O(N log N)](https://en.wikipedia.org/wiki/Coupon_collector%27s_problem), where N is the number of instances the load balancing candidates for the particular request. This is also bounded by the max number of retries (which is configured to 10 by default).
+- Worst case runtime assuming the load balancing algorithm will eventually distribute the load is [O(N log N)](https://en.wikipedia.org/wiki/Coupon_collector%27s_problem), where N is the number of instances the load balancing candidates for the particular request. This is also bounded by the max number of retries (which is configured to 10 by default).
 - There are 2 hops to get data back to the client if it landed on the wrong server.
