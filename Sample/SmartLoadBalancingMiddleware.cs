@@ -114,6 +114,8 @@ public static class SmartLoadBalancingMiddlewareExtensions
     {
         public override ValueTask TransformRequestAsync(HttpContext httpContext, HttpRequestMessage proxyRequest, string destinationPrefix)
         {
+            // Set this header so that we can determine if this request is a probing request or the original request from
+            // the client.
             proxyRequest.Headers.TryAddWithoutValidation("X-Internal", "1");
             return base.TransformRequestAsync(httpContext, proxyRequest, destinationPrefix);
         }
