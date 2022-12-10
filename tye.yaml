@@ -1,0 +1,17 @@
+# This topology is testing SignalR in front of a load balancer
+name: smartrouter
+ingress:
+- name: lb
+  bindings:
+  - port: 8080
+  rules:
+  - service: sample
+services:
+- name: sample
+  project: Sample/Sample.csproj
+  replicas: 2
+- name: redis
+  image: redis
+  bindings:
+  - port: 6379
+    connectionString: "${host}:${port}"
