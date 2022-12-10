@@ -25,4 +25,5 @@ and a redis container.
 
 Here's how a successful SignalR connection is made with this pattern:
 
-![image](https://user-images.githubusercontent.com/95136/206843381-f8f7b741-e839-4328-ab11-fc30a981f8aa.png)
+![image](https://user-images.githubusercontent.com/95136/206862842-d1375a87-a38a-4276-a07c-77cfdfdeba7d.png)
+
