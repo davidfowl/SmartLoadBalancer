@@ -132,6 +132,11 @@ public static class SmartLoadBalancingMiddlewareExtensions
                         await bufferingStream.StopBufferingAsync();
                     }
                 }
+                else
+                {
+                    // We don't want to apply the body if the request failed
+                    return false;
+                }
             }
             return await base.TransformResponseAsync(httpContext, proxyResponse);
         }
