@@ -2,15 +2,13 @@
 
 When running SignalR behind a load balancer, it requires sticky sessions as SignalR is an inherently stateful technology. This can prove difficult in some pieces of infrastructure since it may be shared for all sorts of applications. 
 
-This is a prototype showing technique for using sticky sessions without configuring the load balancer to do so. It accomplishes this by forwarding failed requests (404 missing connection id)
-to the load balancer until the number of retries are exhausted or the proxying has found the right server.
+This is a prototype showing a technique for using sticky sessions without configuring the load balancer to do so. It uses [YARP's](https://github.com/microsoft/reverse-proxy/) `IHttpFowarder` to forwarding failed requests (404 missing connection id)
+to the load balancer until the number of retries are exhausted or the load balancer has found the "right server" (we got a valid response).
 
-This could be optimized in lots of different ways but the assumptions here are:
-- There's no conncectivity between instances
-- There's no way to configure the load balancer for stickiness
-- The load balancing algorithm is going to eventually pick the right server after some number of requests
-
-The retries are bounded so sending additional requests adds latency which can be dialed per request.
+This may be useful if your environment has the following constraints:
+- There's no way to configure the load balancer for stickiness.
+- The load balancing algorithm is going to eventually pick the right server after some number of requests.
+- There's no connectivity between instances.
 
 ## Running the Sample
 
