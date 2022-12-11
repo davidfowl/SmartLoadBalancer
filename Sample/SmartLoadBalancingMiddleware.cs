@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
@@ -35,8 +36,12 @@ public static class SmartLoadBalancingMiddlewareExtensions
         var config = new ForwarderRequestConfig();
 
         var transformer = new Transformer();
+        var fwdOptions = new ForwardedHeadersOptions
+        {
+            ForwardedHeaders = ForwardedHeaders.All
+        };
 
-        return app.Use(async (context, next) =>
+        return app.UseForwardedHeaders(fwdOptions).Use(async (context, next) =>
         {
             // If this is from an internal server, we don't proxy anything as that would cause a chain
             // of LB -> Server X -> LB -> Server Y requests that would spam the load balancer and servers.
@@ -82,11 +87,8 @@ public static class SmartLoadBalancingMiddlewareExtensions
                 if (url is null)
                 {
                     // Grab the host and protocol from the proxy so we can make another request through it
-                    var host = (string?)context.Request.Headers["X-Forwarded-Host"];
-                    var scheme = (string?)context.Request.Headers["X-Forwarded-Proto"] ?? context.Request.Scheme;
-
                     // This should be the url for the proxy
-                    url = host is null ? null : $"{scheme}://{host}";
+                    url = $"{context.Request.Scheme}://{context.Request.Host}";
                 }
 
                 // Number of times we're going to try to resolve this request through the proxy.
