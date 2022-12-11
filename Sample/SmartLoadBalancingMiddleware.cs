@@ -10,6 +10,8 @@ public class SmartLoadBalancerOptions
 {
     // Maximum number of retries after a failed request before giving up
     public int RetryAttempts { get; set; } = 10;
+
+    public string? IngressUrl { get; set; }
 }
 
 public static class SmartLoadBalancingMiddlewareExtensions
@@ -75,19 +77,24 @@ public static class SmartLoadBalancingMiddlewareExtensions
 
             if (hubMetadata is not null)
             {
-                // Grab the host and protocol from the proxy so we can make another request through it
-                var host = (string?)context.Request.Headers["X-Forwarded-Host"];
-                var scheme = (string?)context.Request.Headers["X-Forwarded-Proto"] ?? context.Request.Scheme;
+                var url = options.IngressUrl;
+
+                if (url is null)
+                {
+                    // Grab the host and protocol from the proxy so we can make another request through it
+                    var host = (string?)context.Request.Headers["X-Forwarded-Host"];
+                    var scheme = (string?)context.Request.Headers["X-Forwarded-Proto"] ?? context.Request.Scheme;
+
+                    // This should be the url for the proxy
+                    url = host is null ? null : $"{scheme}://{host}";
+                }
 
                 // Number of times we're going to try to resolve this request through the proxy.
                 // This would be configurable.
                 var tries = options.RetryAttempts;
 
-                if (host is not null)
+                if (url is not null)
                 {
-                    // This should be the url for the proxy
-                    var url = $"{scheme}://{host}";
-
                     // Try until we get a non 404 response from through the load balancer
                     while (context.Response.StatusCode == 404 && tries-- > 0)
                     {
@@ -131,11 +138,6 @@ public static class SmartLoadBalancingMiddlewareExtensions
                     {
                         await bufferingStream.StopBufferingAsync();
                     }
-                }
-                else
-                {
-                    // We don't want to apply the body if the request failed
-                    return false;
                 }
             }
             return await base.TransformResponseAsync(httpContext, proxyResponse);

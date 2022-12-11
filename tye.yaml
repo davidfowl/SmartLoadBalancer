@@ -1,12 +1,14 @@
 # This topology is testing SignalR in front of a load balancer
 name: smartrouter
-ingress:
-- name: lb
-  bindings:
-  - port: 8080
-  rules:
-  - service: sample
 services:
+- name: ingress
+  image: nginx
+  bindings:
+    - protocol: http
+      port: 8080
+  volumes:
+    - source: nginx.conf
+      target: /etc/nginx/conf.d/default.conf
 - name: sample
   project: Sample/Sample.csproj
   replicas: 2
