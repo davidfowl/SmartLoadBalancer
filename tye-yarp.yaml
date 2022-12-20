@@ -1,0 +1,17 @@
+# This topology is testing SignalR in front of a load balancer
+name: smartrouter-yarp
+services:
+- name: ingress
+  project: Yarp.Ingress/Yarp.Ingress.csproj
+  bindings:
+    - protocol: http
+      port: 8080
+- name: sample0
+  project: Sample/Sample.csproj
+- name: sample1
+  project: Sample/Sample.csproj
+- name: redis
+  image: redis
+  bindings:
+  - port: 6379
+    connectionString: "${host}:${port}"

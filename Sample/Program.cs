@@ -12,12 +12,12 @@ if (redisConnection is not null)
     signalr.AddStackExchangeRedis(redisConnection);
 }
 
-builder.Services.AddSmartLoadBalancing(options =>
-{
-    // Configure the ingress url. If it's null, the middleware will use
-    // "X-Forwarded-Host" to determine the URL of the load balancer.
-    options.IngressUrl = builder.Configuration.GetServiceUri("ingress")?.ToString();
-});
+//builder.Services.AddSmartLoadBalancing(options =>
+//{
+//    // Configure the ingress url. If it's null, the middleware will use
+//    // "X-Forwarded-Host" to determine the URL of the load balancer.
+//    options.IngressUrl = builder.Configuration.GetServiceUri("ingress")?.ToString();
+//});
 
 var app = builder.Build();
 
@@ -37,7 +37,7 @@ app.Use((context, next) =>
 
 app.UseFileServer();
 
-app.UseSmartLoadBalancing();
+// app.UseSmartLoadBalancing();
 
 app.MapHub<Chat>("/chat");
 
