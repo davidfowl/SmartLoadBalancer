@@ -1,6 +1,5 @@
 ﻿
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.Extensions.Caching.Memory;
 using Yarp.ReverseProxy.Configuration;
