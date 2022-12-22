@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.ServiceDiscovery;
 using Yarp.ReverseProxy.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,11 +27,18 @@ var routes = new[]
     },
 };
 
-var destinations = new Dictionary<string, DestinationConfig>(StringComparer.OrdinalIgnoreCase)
+var destinations = new Dictionary<string, DestinationConfig>(StringComparer.OrdinalIgnoreCase);
+
+var discovery = new TyeServiceDiscovery(builder.Configuration);
+
+foreach (var (key, address) in await discovery.GetAddresses("sample"))
 {
-    ["destination0"] = new DestinationConfig() { Address = builder.Configuration.GetServiceUri("sample0")?.ToString() },
-    ["destination1"] = new DestinationConfig() { Address = builder.Configuration.GetServiceUri("sample1")?.ToString() },
-};
+    destinations[key] = new DestinationConfig()
+    {
+        Address = address.ToString(),
+    };
+    Console.WriteLine($"{key} => {address}");
+}
 
 var clusters = new[]
 {

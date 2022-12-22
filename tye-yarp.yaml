@@ -6,10 +6,9 @@ services:
   bindings:
     - protocol: http
       port: 8080
-- name: sample0
+- name: sample
   project: Sample/Sample.csproj
-- name: sample1
-  project: Sample/Sample.csproj
+  replicas: 3
 - name: redis
   image: redis
   bindings:
