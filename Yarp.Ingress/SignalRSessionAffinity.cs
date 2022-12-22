@@ -18,7 +18,6 @@ public static class SignalRSessionAffinity
 
         builder.AddTransforms(transforms =>
         {
-            var jsonOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
             var cache = transforms.Services.GetRequiredService<IMemoryCache>();
 
             // REVIEW: Is this good enough for SSE and long polling?
@@ -40,7 +39,7 @@ public static class SignalRSessionAffinity
                 {
                     // The response should be small so we can buffer it
                     var data = await c.ProxyResponse.Content.ReadAsByteArrayAsync(c.HttpContext.RequestAborted);
-                    var negotiateResponse = JsonSerializer.Deserialize<NegotiationResponse>(data, jsonOptions);
+                    var negotiateResponse = NegotiateProtocol.ParseResponse(data);
 
                     // Restore the content so it can be read again
                     c.ProxyResponse.Content = new ByteArrayContent(data);
