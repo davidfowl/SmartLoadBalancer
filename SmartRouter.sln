@@ -16,7 +16,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yarp.Ingress", "Yarp.Ingres
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SignalRClient", "SignalRClient\SignalRClient.csproj", "{B8BCC8EE-EDB3-43B2-83DE-3C7CE13CA201}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Extensions.ServiceDiscovery", "Microsoft.Extensions.ServiceDiscovery\Microsoft.Extensions.ServiceDiscovery.csproj", "{1C21890A-FB0E-4F8D-A958-8D8897D9E7B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Extensions.ServiceDiscovery", "Microsoft.Extensions.ServiceDiscovery\Microsoft.Extensions.ServiceDiscovery.csproj", "{1C21890A-FB0E-4F8D-A958-8D8897D9E7B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.AspNetCore.SignalR.LoadBalancing", "Microsoft.AspNetCore.SignalR.LoadBalancing\Microsoft.AspNetCore.SignalR.LoadBalancing.csproj", "{63611FBD-9A21-4450-8A7C-60406BDF53C7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,6 +42,10 @@ Global
 		{1C21890A-FB0E-4F8D-A958-8D8897D9E7B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C21890A-FB0E-4F8D-A958-8D8897D9E7B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C21890A-FB0E-4F8D-A958-8D8897D9E7B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63611FBD-9A21-4450-8A7C-60406BDF53C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63611FBD-9A21-4450-8A7C-60406BDF53C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63611FBD-9A21-4450-8A7C-60406BDF53C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63611FBD-9A21-4450-8A7C-60406BDF53C7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

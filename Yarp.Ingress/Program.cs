@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.ServiceDiscovery;
 using Yarp.ReverseProxy.Configuration;
 
@@ -15,6 +14,7 @@ var routes = new[]
             Path = "{**catch-all}"
         }
     },
+    // Mark the negotiate route as a signalr route so we can affinitize the connection id
     new RouteConfig()
     {
         RouteId = "route2",

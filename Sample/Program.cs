@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Http.Connections;
 using Sample;
 
 var builder = WebApplication.CreateBuilder(args);
