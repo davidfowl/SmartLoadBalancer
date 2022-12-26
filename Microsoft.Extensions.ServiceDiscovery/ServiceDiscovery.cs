@@ -14,9 +14,9 @@ public static class ServiceDiscoveryExtensions
 
 public interface IServiceDiscovery
 {
-    ValueTask<IReadOnlyList<Replica>> GetAddresses(string name);
+    ValueTask<IReadOnlyList<Replica>> GetAddressesAsync(string name);
 
-    ValueTask<Uri?> GetAddress(string name);
+    ValueTask<Uri?> GetAddressAsync(string name);
 }
 
 public record struct Replica(string Name, Uri Address);
@@ -31,12 +31,12 @@ public class TyeServiceDiscovery : IServiceDiscovery
         _configuration = configuration;
     }
 
-    public ValueTask<Uri?> GetAddress(string name)
+    public ValueTask<Uri?> GetAddressAsync(string name)
     {
         return ValueTask.FromResult(_configuration.GetServiceUri(name));
     }
 
-    public async ValueTask<IReadOnlyList<Replica>> GetAddresses(string name)
+    public async ValueTask<IReadOnlyList<Replica>> GetAddressesAsync(string name)
     {
         // Quick check to see if this is even a service
         if (_configuration.GetServiceUri(name) is null)
@@ -44,16 +44,14 @@ public class TyeServiceDiscovery : IServiceDiscovery
             return Array.Empty<Replica>();
         }
 
-        // TODO: A TYE_HOST variable should be injected
+        // TODO: A TYE_HOST variable should be injected so we don't hard code 8000
         var serviceDefinition = await _client.GetFromJsonAsync<JsonObject>($"http://127.0.0.1:8000/api/v1/services/{name}");
 
         List<Replica>? replicas = null;
         foreach (var (key, replica) in serviceDefinition!["replicas"]!.AsObject())
         {
-            var env = replica!["environment"]!.AsObject();
-            var ports = replica!["ports"]!.AsArray().Select(n => n!.GetValue<int>()).ToArray();
-            var replicaAddress = $"http://127.0.0.1:{ports[0]}";
-
+            var httpPort = replica!["ports"]!.AsArray().First();
+            var replicaAddress = $"http://127.0.0.1:{httpPort}";
 
             replicas ??= new();
             replicas.Add(new(key, new(replicaAddress)));

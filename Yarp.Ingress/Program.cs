@@ -31,7 +31,7 @@ var destinations = new Dictionary<string, DestinationConfig>(StringComparer.Ordi
 
 var discovery = new TyeServiceDiscovery(builder.Configuration);
 
-foreach (var (key, address) in await discovery.GetAddresses("sample"))
+foreach (var (key, address) in await discovery.GetAddressesAsync("sample"))
 {
     destinations[key] = new DestinationConfig()
     {
