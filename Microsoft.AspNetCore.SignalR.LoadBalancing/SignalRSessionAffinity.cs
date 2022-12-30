@@ -63,7 +63,12 @@ public static class SignalRSessionAffinity
             StringValues.IsNullOrEmpty(httpContext.Request.Query[affinityKey]) &&
             proxyFeature.Route.Config.Metadata?.ContainsKey("hub") is true)
         {
-            var destination = proxyFeature.ProxiedDestination ?? proxyFeature.AvailableDestinations[Random.Shared.Next(proxyFeature.AvailableDestinations.Count)];
+            var destination = (proxyFeature.ProxiedDestination, proxyFeature.AvailableDestinations) switch
+            {
+                (var proxied, _) when proxied is not null => proxied,
+                (_, [var one]) => one,
+                (_, var many) => many[Random.Shared.Next(many.Count)],
+            };
 
             var hashes = httpContext.RequestServices.GetRequiredService<DestinationHashes>();
 
