@@ -21,9 +21,9 @@ var routes = new[]
         ClusterId = "cluster1",
         Match = new RouteMatch
         {
-            Path = "/chat/negotiate"
+            Path = "/chat/negotiate" 
         },
-        Metadata = new Dictionary<string, string> { ["signalr"] = "true" }
+        Metadata = new Dictionary<string, string> { ["hub"] = "true" }
     },
 };
 

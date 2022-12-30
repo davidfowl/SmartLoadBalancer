@@ -29,7 +29,7 @@ public static class SignalRSessionAffinity
                 // If this route is marked as a signalr route, then get the negotiate response
                 // and associate the connection id with this destination.
 
-                if (proxyFeature.Route.Config.Metadata?.ContainsKey("signalr") is true &&
+                if (proxyFeature.Route.Config.Metadata?.ContainsKey("hub") is true &&
                     StringValues.IsNullOrEmpty(c.HttpContext.Request.Query["yarp.affinity"]) &&
                     c.ProxyResponse is { IsSuccessStatusCode: true })
                 {
