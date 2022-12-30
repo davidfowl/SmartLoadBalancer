@@ -58,8 +58,9 @@ public static class SignalRSessionAffinity
     private static async Task<bool> AffinitizeNegotiateRequest(HttpContext httpContext)
     {
         // Check if should be affinitizing this route
-        if (StringValues.IsNullOrEmpty(httpContext.Request.Query["yarp.affinity"]) &&
-            httpContext.GetReverseProxyFeature() is { } proxyFeature &&
+        if (httpContext.GetReverseProxyFeature() is { } proxyFeature &&
+            proxyFeature is { Cluster.Config.SessionAffinity.AffinityKeyName: var affinityKey } &&
+            StringValues.IsNullOrEmpty(httpContext.Request.Query[affinityKey]) &&
             proxyFeature.Route.Config.Metadata?.ContainsKey("hub") is true)
         {
             var destination = proxyFeature.ProxiedDestination ?? proxyFeature.AvailableDestinations[Random.Shared.Next(proxyFeature.AvailableDestinations.Count)];
@@ -68,7 +69,7 @@ public static class SignalRSessionAffinity
 
             // Redirect to the same URL with the destination hash added to the query string
             var req = httpContext.Request;
-            var query = req.QueryString.Add("yarp.affinity", hashes.GetDestinationHash(destination));
+            var query = req.QueryString.Add(affinityKey, hashes.GetDestinationHash(destination));
 
             var url = UriHelper.BuildAbsolute(req.Scheme, req.Host, req.PathBase, new(req.Path.Value!.Replace("/negotiate", "")), query);
 
@@ -93,6 +94,7 @@ public static class SignalRSessionAffinity
     private sealed class SignalRAffinity : ISessionAffinityPolicy
     {
         private readonly DestinationHashes _hashes;
+
         public SignalRAffinity(DestinationHashes hashes) => _hashes = hashes;
 
         public string Name => "SignalR";
@@ -104,7 +106,7 @@ public static class SignalRSessionAffinity
 
         public AffinityResult FindAffinitizedDestinations(HttpContext context, ClusterState cluster, SessionAffinityConfig config, IReadOnlyList<DestinationState> destinations)
         {
-            string? affinity = context.Request.Query["yarp.affinity"];
+            string? affinity = context.Request.Query[config.AffinityKeyName];
             if (affinity is not null)
             {
                 foreach (var d in destinations)

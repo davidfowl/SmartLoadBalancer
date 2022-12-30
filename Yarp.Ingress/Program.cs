@@ -47,7 +47,7 @@ var clusters = new[]
         ClusterId = "cluster1",
         SessionAffinity = new SessionAffinityConfig()
         {
-            AffinityKeyName = "Sticky",
+            AffinityKeyName = "yarp.affinity",
             Policy = "SignalR",
             Enabled = true
         },
