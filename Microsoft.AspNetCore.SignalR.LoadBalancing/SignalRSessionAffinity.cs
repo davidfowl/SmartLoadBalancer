@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -20,13 +21,13 @@ public static class SignalRSessionAffinity
 
         builder.AddTransforms(transforms =>
         {
-            // YARP 2.0
+            // With YARP 2.0, request transforms can write short circuit the request
             //transforms.AddRequestTransform(async c =>
             //{
             //    await AffinitizeNegotiateRequest(c.HttpContext);
             //});
 
-            // YARP 1.1.x
+            // YARP 1.1.x, it's a response transform
             //transforms.AddResponseTransform(async c =>
             //{
             //    if (c.ProxyResponse is { IsSuccessStatusCode: true })
@@ -56,19 +57,16 @@ public static class SignalRSessionAffinity
 
     private static async Task<bool> AffinitizeNegotiateRequest(HttpContext httpContext)
     {
-        var hashes = httpContext.RequestServices.GetRequiredService<DestinationHashes>();
-        var proxyFeature = httpContext.GetReverseProxyFeature();
-
-        // If this route is marked as a signalr route, then get the negotiate response
-        // and associate the connection id with this destination.
-
-        if (proxyFeature.Route.Config.Metadata?.ContainsKey("hub") is true &&
-            StringValues.IsNullOrEmpty(httpContext.Request.Query["yarp.affinity"]))
+        // Check if should be affinitizing this route
+        if (StringValues.IsNullOrEmpty(httpContext.Request.Query["yarp.affinity"]) &&
+            httpContext.GetReverseProxyFeature() is { } proxyFeature &&
+            proxyFeature.Route.Config.Metadata?.ContainsKey("hub") is true)
         {
-            var destination = proxyFeature.ProxiedDestination ?? proxyFeature.AllDestinations[Random.Shared.Next(proxyFeature.AvailableDestinations.Count)];
+            var destination = proxyFeature.ProxiedDestination ?? proxyFeature.AvailableDestinations[Random.Shared.Next(proxyFeature.AvailableDestinations.Count)];
 
-            // Redirect to the same URL with 
+            var hashes = httpContext.RequestServices.GetRequiredService<DestinationHashes>();
 
+            // Redirect to the same URL with the destination hash added to the query string
             var req = httpContext.Request;
             var query = req.QueryString.Add("yarp.affinity", hashes.GetDestinationHash(destination));
 
@@ -84,10 +82,7 @@ public static class SignalRSessionAffinity
             // into the query string.
 
             httpContext.Response.Clear();
-            await httpContext.Response.WriteAsJsonAsync(new
-            {
-                url
-            });
+            await httpContext.Response.WriteAsJsonAsync(new RedirectResponse(url), JsonContext.Default.RedirectResponse);
 
             return true;
         }
@@ -128,7 +123,7 @@ public static class SignalRSessionAffinity
             return new(null, AffinityStatus.AffinityKeyNotSet);
         }
     }
-    private class DestinationHashes
+    private sealed class DestinationHashes
     {
         private readonly ConditionalWeakTable<DestinationState, string> _hashes = new();
 
@@ -141,4 +136,13 @@ public static class SignalRSessionAffinity
             });
         }
     }
+}
+
+internal record struct RedirectResponse(string Url);
+
+[JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
+[JsonSerializable(typeof(RedirectResponse))]
+partial class JsonContext : JsonSerializerContext
+{
+
 }
