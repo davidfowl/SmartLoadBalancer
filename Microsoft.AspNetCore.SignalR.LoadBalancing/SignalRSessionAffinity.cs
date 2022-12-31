@@ -65,7 +65,7 @@ public static class SignalRSessionAffinity
         {
             var destination = (proxyFeature.ProxiedDestination, proxyFeature.AvailableDestinations) switch
             {
-                (var proxied and not null, _) => proxied,
+                ({ } proxied, _) => proxied,
                 (_, [var one]) => one,
                 (_, var many) => many[Random.Shared.Next(many.Count)],
             };
