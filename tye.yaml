@@ -1,17 +1,14 @@
 # This topology is testing SignalR in front of a load balancer
-name: smartrouter
+name: smartrouter-yarp
 services:
 - name: ingress
-  image: nginx
+  project: Yarp.Ingress/Yarp.Ingress.csproj
   bindings:
     - protocol: http
       port: 8080
-  volumes:
-    - source: nginx.conf
-      target: /etc/nginx/conf.d/default.conf
 - name: sample
   project: Sample/Sample.csproj
-  replicas: 2
+  replicas: 3
 - name: redis
   image: redis
   bindings:
