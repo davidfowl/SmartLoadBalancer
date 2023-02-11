@@ -2,13 +2,13 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Primitives;
 using Yarp.ReverseProxy.Configuration;
 using Yarp.ReverseProxy.Model;
 using Yarp.ReverseProxy.SessionAffinity;
+using Yarp.ReverseProxy.Transforms;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -22,37 +22,13 @@ public static class SignalRSessionAffinity
         builder.AddTransforms(transforms =>
         {
             // With YARP 2.0, request transforms can write short circuit the request
-            //transforms.AddRequestTransform(async c =>
-            //{
-            //    await AffinitizeNegotiateRequest(c.HttpContext);
-            //});
-
-            // YARP 1.1.x, it's a response transform
-            //transforms.AddResponseTransform(async c =>
-            //{
-            //    if (c.ProxyResponse is { IsSuccessStatusCode: true })
-            //    {
-            //        c.SuppressResponseBody = await AffinitizeNegotiateRequest(c.HttpContext);
-            //    }
-            //});
+            transforms.AddResponseTransform(async c =>
+            {
+                c.SuppressResponseBody = await AffinitizeNegotiateRequest(c.HttpContext);
+            });
         });
 
         return builder;
-    }
-
-    public static IReverseProxyApplicationBuilder UseAffinitizeNegotiateRequest(this IReverseProxyApplicationBuilder proxy)
-    {
-        proxy.Use(async (context, next) =>
-        {
-            if (await AffinitizeNegotiateRequest(context))
-            {
-                return;
-            }
-
-            await next(context);
-        });
-
-        return proxy;
     }
 
     private static async Task<bool> AffinitizeNegotiateRequest(HttpContext httpContext)

@@ -61,12 +61,6 @@ builder.Services.AddReverseProxy()
 
 var app = builder.Build();
 
-app.MapReverseProxy(proxy =>
-{
-    proxy.UseSessionAffinity();
-    proxy.UseLoadBalancing();
-    proxy.UsePassiveHealthChecks();
-    proxy.UseAffinitizeNegotiateRequest();
-});
+app.MapReverseProxy();
 
 app.Run();
