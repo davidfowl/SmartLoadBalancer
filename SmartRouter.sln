@@ -11,6 +11,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample", "Sample\Sample.csproj", "{91DA43C0-63A3-4F07-AD01-3C7AEBB97EB6}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yarp.Ingress", "Yarp.Ingress\Yarp.Ingress.csproj", "{6BD1EBA1-ABF8-458D-9342-1C80D56158B8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SignalRClient", "SignalRClient\SignalRClient.csproj", "{B8BCC8EE-EDB3-43B2-83DE-3C7CE13CA201}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Extensions.ServiceDiscovery", "Microsoft.Extensions.ServiceDiscovery\Microsoft.Extensions.ServiceDiscovery.csproj", "{1C21890A-FB0E-4F8D-A958-8D8897D9E7B7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.AspNetCore.SignalR.LoadBalancing", "Microsoft.AspNetCore.SignalR.LoadBalancing\Microsoft.AspNetCore.SignalR.LoadBalancing.csproj", "{63611FBD-9A21-4450-8A7C-60406BDF53C7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +29,22 @@ Global
 		{91DA43C0-63A3-4F07-AD01-3C7AEBB97EB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91DA43C0-63A3-4F07-AD01-3C7AEBB97EB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91DA43C0-63A3-4F07-AD01-3C7AEBB97EB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BD1EBA1-ABF8-458D-9342-1C80D56158B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BD1EBA1-ABF8-458D-9342-1C80D56158B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BD1EBA1-ABF8-458D-9342-1C80D56158B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BD1EBA1-ABF8-458D-9342-1C80D56158B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8BCC8EE-EDB3-43B2-83DE-3C7CE13CA201}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8BCC8EE-EDB3-43B2-83DE-3C7CE13CA201}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8BCC8EE-EDB3-43B2-83DE-3C7CE13CA201}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8BCC8EE-EDB3-43B2-83DE-3C7CE13CA201}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C21890A-FB0E-4F8D-A958-8D8897D9E7B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C21890A-FB0E-4F8D-A958-8D8897D9E7B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C21890A-FB0E-4F8D-A958-8D8897D9E7B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C21890A-FB0E-4F8D-A958-8D8897D9E7B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63611FBD-9A21-4450-8A7C-60406BDF53C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63611FBD-9A21-4450-8A7C-60406BDF53C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63611FBD-9A21-4450-8A7C-60406BDF53C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63611FBD-9A21-4450-8A7C-60406BDF53C7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
