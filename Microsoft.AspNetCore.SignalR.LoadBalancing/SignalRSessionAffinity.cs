@@ -21,11 +21,14 @@ public static class SignalRSessionAffinity
 
         builder.AddTransforms(transforms =>
         {
-            // With YARP 2.0, request transforms can write short circuit the request
-            transforms.AddResponseTransform(async c =>
+            if (transforms.Route.Metadata is { } metatada && metatada.ContainsKey("hub") is true)
             {
-                c.SuppressResponseBody = await AffinitizeNegotiateRequest(c.HttpContext);
-            });
+                // With YARP 2.0, request transforms can write short circuit the request
+                transforms.AddResponseTransform(async c =>
+                {
+                    c.SuppressResponseBody = await AffinitizeNegotiateRequest(c.HttpContext);
+                });
+            }
         });
 
         return builder;
@@ -36,8 +39,7 @@ public static class SignalRSessionAffinity
         // Check if should be affinitizing this route
         if (httpContext.GetReverseProxyFeature() is { } proxyFeature &&
             proxyFeature is { Cluster.Config.SessionAffinity.AffinityKeyName: var affinityKey } &&
-            StringValues.IsNullOrEmpty(httpContext.Request.Query[affinityKey]) &&
-            proxyFeature.Route.Config.Metadata?.ContainsKey("hub") is true)
+            StringValues.IsNullOrEmpty(httpContext.Request.Query[affinityKey]))
         {
             var destination = (proxyFeature.ProxiedDestination, proxyFeature.AvailableDestinations) switch
             {
